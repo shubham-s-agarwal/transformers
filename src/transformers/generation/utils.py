@@ -2357,11 +2357,11 @@ class GenerationMixin:
             and not self.config.is_encoder_decoder
         ):
             max_cache_length += inputs_tensor.shape[1]
-        print("MODEL KWARGS BEFORE",model_kwargs)
+        
         self._prepare_cache_for_generation(
             generation_config, model_kwargs, assistant_model, batch_size, max_cache_length, device
         )
-        print("MODEL KWARGS",model_kwargs)
+        
         print(len(model_kwargs['past_key_values'].key_cache))
         # 8. determine generation mode
         generation_mode = generation_config.get_generation_mode(assistant_model)
@@ -2625,6 +2625,9 @@ class GenerationMixin:
             and getattr(result.past_key_values, "to_legacy_cache") is not None
         ):
             result.past_key_values = result.past_key_values.to_legacy_cache()
+        
+        del model_kwargs['past_key_values']
+        torch.cuda.empty_cache() 
         
         return result
 
