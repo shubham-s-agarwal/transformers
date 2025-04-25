@@ -2360,13 +2360,14 @@ class GenerationMixin:
             and not self.config.is_encoder_decoder
         ):
             max_cache_length += inputs_tensor.shape[1]
+        print("MAX CACHE LENGTH:",max_cache_length)
         self._prepare_cache_for_generation(
             generation_config, model_kwargs, assistant_model, batch_size, max_cache_length, device
         )
 
         # 8. determine generation mode
         generation_mode = generation_config.get_generation_mode(assistant_model)
-
+        print("GENERATION_MODE:",generation_mode)
         if streamer is not None and (generation_config.num_beams > 1):
             raise ValueError(
                 "`streamer` cannot be used with beam search (yet!). Make sure that `num_beams` is set to 1."
