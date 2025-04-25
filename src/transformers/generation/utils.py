@@ -2361,7 +2361,7 @@ class GenerationMixin:
         self._prepare_cache_for_generation(
             generation_config, model_kwargs, assistant_model, batch_size, max_cache_length, device
         )
-
+        print("MODEL KWARGS",model_kwargs)
         # 8. determine generation mode
         generation_mode = generation_config.get_generation_mode(assistant_model)
 
