@@ -1897,7 +1897,7 @@ class GenerationMixin:
         Prepares the cache for generation (if applicable), given `generate`'s parameterization. If a cache is
         instantiated, writes it to `model_kwargs`, under the name expected by the model.
         """
-        print("IN prepare func; generation config.cache_implementation", generation_config.cache_implementation)
+        
         cache_name = "past_key_values" if "mamba" not in self.__class__.__name__.lower() else "cache_params"
         requires_cross_attention_cache = (
             self.config.is_encoder_decoder or model_kwargs.get("encoder_outputs") is not None
@@ -1951,7 +1951,6 @@ class GenerationMixin:
         generation_config.cache_implementation = generation_config.cache_implementation or getattr(
             self.config.get_text_config(), "cache_implementation", None
         )
-        print("NOW:",generation_config.cache_implementation)
 
         if generation_config.cache_implementation is not None:
             if generation_config.cache_implementation in NEED_SETUP_CACHE_CLASSES_MAPPING:
@@ -1960,8 +1959,6 @@ class GenerationMixin:
                         "This model does not support `cache_implementation='static'`. Please check the following "
                         "issue: https://github.com/huggingface/transformers/issues/28981"
                     )
-                print("This is about to get cache, params:",generation_config)
-                print("MAx cahce length:",max_cache_length)
                 model_kwargs[cache_name] = self._get_cache(
                     cache_implementation=generation_config.cache_implementation,
                     batch_size=max(generation_config.num_beams, generation_config.num_return_sequences) * batch_size,
@@ -2360,14 +2357,14 @@ class GenerationMixin:
             and not self.config.is_encoder_decoder
         ):
             max_cache_length += inputs_tensor.shape[1]
-        print("MAX CACHE LENGTH:",max_cache_length)
+        
         self._prepare_cache_for_generation(
             generation_config, model_kwargs, assistant_model, batch_size, max_cache_length, device
         )
 
         # 8. determine generation mode
         generation_mode = generation_config.get_generation_mode(assistant_model)
-        print("GENERATION_MODE:",generation_mode)
+
         if streamer is not None and (generation_config.num_beams > 1):
             raise ValueError(
                 "`streamer` cannot be used with beam search (yet!). Make sure that `num_beams` is set to 1."
@@ -2627,6 +2624,7 @@ class GenerationMixin:
             and getattr(result.past_key_values, "to_legacy_cache") is not None
         ):
             result.past_key_values = result.past_key_values.to_legacy_cache()
+        self._cache.reset()
         return result
 
     def _has_unfinished_sequences(self, this_peer_finished: bool, synced_gpus: bool, device: torch.device) -> bool:
