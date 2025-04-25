@@ -2628,13 +2628,13 @@ class GenerationMixin:
         
         print("MODEL KWARGS",model_kwargs)
         print("BEFORE:",len(model_kwargs['past_key_values'].key_cache))
-        # del model_kwargs['past_key_values']
-        # try:
-        #     print("AFTER:",len(model_kwargs['past_key_values'].key_cache))
-        # except:
-        #     print("AFTER",model_kwargs)
+        del model_kwargs['past_key_values']
+        try:
+            print("AFTER:",len(model_kwargs['past_key_values'].key_cache))
+        except:
+            print("AFTER",model_kwargs)
         
-        # del model_kwargs['attention_mask']
+        del model_kwargs['attention_mask']
 
         torch.cuda.empty_cache() 
         
