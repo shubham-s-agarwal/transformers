@@ -2629,7 +2629,10 @@ class GenerationMixin:
         print("MODEL KWARGS",model_kwargs)
         print("BEFORE:",len(model_kwargs['past_key_values'].key_cache))
         del model_kwargs['past_key_values']
-        print("AFTER:",len(model_kwargs['past_key_values'].key_cache))
+        try:
+            print("AFTER:",len(model_kwargs['past_key_values'].key_cache))
+        except:
+            print("AFTER",model_kwargs)
         torch.cuda.empty_cache() 
         
         return result
