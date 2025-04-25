@@ -2633,6 +2633,9 @@ class GenerationMixin:
             print("AFTER:",len(model_kwargs['past_key_values'].key_cache))
         except:
             print("AFTER",model_kwargs)
+        
+        del model_kwargs['attention_mask']
+
         torch.cuda.empty_cache() 
         
         return result
